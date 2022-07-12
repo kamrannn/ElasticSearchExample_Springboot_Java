@@ -11,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,6 +29,11 @@ public class ElasticSearchService {
         this.sample3Repository = sample3Repository;
     }
 
+    /**
+     * You can call this method when you want to save the data from the json file in the elastic search.
+     * @throws IOException
+     * @throws ParseException
+     */
     public void test() throws IOException, ParseException {
         File file = ResourceUtils.getFile("classpath:sample3.json");
         //Read File Content
@@ -52,13 +58,13 @@ public class ElasticSearchService {
         }
     }
 
-    @PostConstruct
-    public void test2() {
-        log.info("Running test 2");
+    public List<Sample3> getAllData() {
+        List<Sample3> result = new ArrayList<>();
         Iterable<Sample3> sample3List = sample3Repository.findAll();
-
         for (Sample3 sample3 : sample3List) {
             System.out.println("Color: " + sample3.getColor() + ", Value: " + sample3.getValue());
+            result.add(sample3);
         }
+        return result;
     }
 }
